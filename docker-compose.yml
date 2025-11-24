@@ -17,7 +17,7 @@ services:
       context: ./app/front
     image: datapress-front:dev
     environment:
-      API_BASE_URL: http://api:8000
+      API_BASE_URL: http://localhost:8000
     ports:
       - "8080:80"
     depends_on:

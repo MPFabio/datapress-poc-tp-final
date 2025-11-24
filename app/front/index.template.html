@@ -70,14 +70,19 @@
     </main>
 
     <script>
-      const apiBaseUrl = window.API_BASE_URL || "__API_BASE_URL__";
+      const resolvedApiUrl = window.API_BASE_URL || "${API_BASE_URL}";
+      const apiUrl =
+        resolvedApiUrl && resolvedApiUrl.trim().length > 0
+          ? resolvedApiUrl
+          : "http://localhost:8000";
+
       const link = document.getElementById("api-link");
-      link.textContent = apiBaseUrl;
-      link.href = apiBaseUrl;
+      link.textContent = apiUrl;
+      link.href = apiUrl;
 
       async function loadApiStatus() {
         try {
-          const response = await fetch(`${apiBaseUrl}/`);
+          const response = await fetch(`${apiUrl}/`);
           if (!response.ok) {
             throw new Error(`Code HTTP ${response.status}`);
           }

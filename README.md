@@ -67,13 +67,23 @@ Ajoutez des secrets de registre si vous souhaitez pousser automatiquement l'imag
 Les documents détaillés se trouvent dans `docs/` :
 
 - `documentation_technique.md` : contexte, architecture, décisions et guide d'exploitation.
-- `presentation_client.md` : support synthétique orienté DSI.
+- `presentation_client.pptx` : support synthétique orienté DSI, prêt à projeter.
 
 ## Tests et vérifications
 
 - `docker compose logs -f api front` pour suivre les services locaux.
 - `uvicorn` embarqué expose `/health` utilisé par les probes Kubernetes.
 - Sur Kubernetes : `kubectl logs -n datapress-recette deploy/datapress-api` et `kubectl port-forward service/datapress-api 8081:80` pour diagnostiquer.
+
+## Captures d'écran
+
+Les captures représentatives sont regroupées dans `screenshot/` :
+
+- `api-local.png` : réponse JSON de l'API sur http://localhost:8000.
+- `front-local.png` : interface front interrogeant l'API.
+- `docker-compose-ps.png` : état des conteneurs en mode développement.
+- `kubectl-get-all.png` : vue d'ensemble des pods, services et deployments sur Kubernetes.
+- `kubectl-get-events.png` : chronologie des événements dans le namespace `datapress-recette`.
 
 ## Étapes suivantes possibles
 
