@@ -1,0 +1,31 @@
+Objet : Mission de consulting – POC conteneurisation & Kubernetes
+
+Bonjour,
+
+Comme évoqué lors de notre dernier échange, nous souhaitons lancer un POC pour moderniser le déploiement de notre plateforme interne DataPress.
+
+Nos objectifs sont les suivants :
+
+1. **Séparer** clairement le front et l’API, au lieu de tout héberger sur une seule machine.
+2. Disposer d’un environnement de **recette** plus fiable, qui nous permette de tester de nouvelles versions sans bloquer l’exploitation.
+3. Commencer à utiliser des **conteneurs** (Docker) et un **orchestrateur** (Kubernetes) afin de préparer, à moyen terme, une migration vers une architecture plus robuste.
+4. Introduire un **minimum de CI/CD**, ne serait-ce que pour standardiser le build des images et vérifier qu’une nouvelle version se construit correctement.
+
+Pour ce POC, nous n’avons pas besoin de toutes les fonctionnalités de la plateforme actuelle. Un **échantillon représentatif** suffit, par exemple :
+
+- un front simple qui affiche une page d’accueil DataPress,
+- une API minimaliste qui renvoie une réponse JSON cohérente,
+- éventuellement une source de données simple (base ou simulation).
+
+Nous savons que ce projet est limité dans le temps. Nous ne cherchons pas un produit parfait, mais :
+
+- une **architecture claire**,
+- des **fichiers de configuration propres**,
+- une **documentation technique** compréhensible,
+- et une **présentation synthétique** des décisions prises.
+
+Merci de préparer votre proposition et de la présenter comme si vous étiez une équipe de consultants intervenant auprès de DataPress.
+
+Cordialement,
+
+Le DSI de DataPress

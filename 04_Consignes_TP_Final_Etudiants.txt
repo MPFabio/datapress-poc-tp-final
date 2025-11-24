@@ -1,0 +1,204 @@
+TP Final – Mission de consulting : POC DataPress (conteneurs & Kubernetes)
+========================================================================
+
+Avant de commencer
+------------------
+1. Lisez attentivement les documents de contexte :
+   - 01_Contexte_General_DataPress.txt
+   - 02_Mail_DSI_DataPress.txt
+   - 03_Annexe_Extrait_Besoins_DataPress.txt
+
+2. Vous travaillez comme si vous étiez une **équipe de consultants** mandatée pour proposer un POC complet, à la fois technique et présentable.
+
+Objectif général
+----------------
+Concevoir et mettre en place un **proof of concept (POC)** pour l’entreprise DataPress, en mobilisant :
+
+- Docker et Docker Compose (mode développement),
+- Kubernetes (mode recette),
+- des pratiques de base en sécurité (non-root, secrets),
+- des probes et ressources Kubernetes,
+- un début de CI/CD,
+- une documentation et une présentation adaptées au DSI.
+
+Votre travail se décompose en quatre volets :
+
+1) Containerisation & mode développement local  
+2) Déploiement sur Kubernetes (environnement de recette)  
+3) CI/CD minimal sur le dépôt Git  
+4) Documentation technique et présentation “client”  
+
+Les consignes ci-dessous doivent être entièrement respectées.
+
+------------------------------------------------------------
+1) Création du dépôt et organisation minimale
+------------------------------------------------------------
+- Créez un **dépôt Git** (local, et idéalement distant sur GitHub).
+- Proposez une organisation minimale claire, par exemple :
+
+  - `app/api/` : code source de l’API
+  - `app/front/` : code ou contenu du front
+  - `docker/` ou racine : Dockerfile(s), .dockerignore
+  - `k8s/` : manifests Kubernetes
+  - `.github/workflows/` : fichiers de pipeline CI (si vous utilisez GitHub Actions)
+  - `docs/` : documentation technique
+  - `README.md` : introduction et mode d’emploi du projet
+
+- Le dépôt doit être **propre** :
+  - pas de fichiers temporaires ou non pertinents,
+  - des noms de fichiers et de répertoires explicites.
+
+------------------------------------------------------------
+2) Containerisation & mode développement (Docker / Compose)
+------------------------------------------------------------
+Vous devez proposer un mode d’exécution “développeur” basé sur Docker.
+
+Exigences :
+
+1. API
+   - Fournir une petite API (langage au choix) avec :
+     - un endpoint `/` retournant un JSON simple,
+     - un endpoint `/health` pour indiquer l’état de l’API.
+   - Écrire un **Dockerfile multi-stage** pour l’API :
+     - une étape de build,
+     - une étape runtime plus légère,
+     - un utilisateur **non-root** dans la phase runtime.
+   - Fournir un `.dockerignore` adapté.
+
+2. Front
+   - Créer un front très simple (page HTML ou mini-app) qui :
+     - affiche “DataPress – POC”,
+     - mentionne une version (ex. “v1.0 POC”),
+     - fait au minimum référence à l’API (lien ou appel simple).
+   - Fournir un Dockerfile pour le front, ou utiliser une image type NGINX avec les fichiers statiques.
+
+3. Docker Compose (mode dev)
+   - Écrire un fichier `docker-compose.yml` qui lance au minimum :
+     - un service `api`,
+     - un service `front`,
+     - (optionnel) un service de base de données si vous choisissez d’en intégrer une.
+   - Configurer un réseau dédié entre ces services.
+   - Lancer et tester l’ensemble en local avec `docker compose up`.
+   - Documenter dans le `README.md` comment lancer ce mode développement.
+
+------------------------------------------------------------
+3) Déploiement Kubernetes (environnement recette)
+------------------------------------------------------------
+Vous devez préparer un déploiement sur un cluster Kubernetes (local ou distant) conforme aux attentes du DSI.
+
+Exigences :
+
+1. Namespace dédié
+   - Créer un namespace (ex. `datapress-recette`) et l’utiliser pour tous les objets du POC.
+
+2. API
+   - Créer un **Deployment** pour l’API :
+     - au moins **2 réplicas**,
+     - `readinessProbe` et `livenessProbe` basées sur `/health`,
+     - des `resources.requests` et `resources.limits` au moins pour la **mémoire**.
+   - Créer un **Service** de type **ClusterIP** :
+     - accessible sur le port 80,
+     - redirigeant vers le port réel de l’API.
+
+3. Front
+   - Créer un **Deployment** pour le front (au moins 1 réplique).
+   - Créer un **Service** d’exposition :
+     - soit un Service **NodePort**,
+     - soit un **Ingress** (si vous maîtrisez déjà cet objet et disposez d’un IngressController).
+   - Le front doit pouvoir accéder à l’API via le Service Kubernetes (et non via une IP fixe).
+
+4. ConfigMap & Secret
+   - Créer au moins un **ConfigMap** pour des paramètres non sensibles (par exemple : URL de l’API, messages, configuration simple).
+   - Créer au moins un **Secret** pour un élément sensible (par exemple : pseudo mot de passe ou token).
+   - Monter ces valeurs dans vos pods (via variables d’environnement ou fichiers) et les utiliser réellement si possible.
+
+5. Vérifications minimales
+   - Les commandes suivantes doivent donner un état cohérent :
+     - `kubectl get all -n <votre_namespace>`
+     - `kubectl get events -n <votre_namespace> --sort-by=.lastTimestamp`
+   - Vous devez être capables :
+     - d’accéder au front depuis votre machine,
+     - de vérifier que l’API répond via son Service interne.
+
+------------------------------------------------------------
+4) CI/CD minimal sur le dépôt
+------------------------------------------------------------
+Vous devez ajouter un début de chaîne CI/CD dans le dépôt.
+
+Exigences :
+
+- Créer au moins un fichier de workflow dans `.github/workflows/` (si vous utilisez GitHub) ou un équivalent dans un autre outil.
+- Ce workflow doit, au minimum :
+  - récupérer le code du dépôt,
+  - tenter de **builder** l’image de l’API (ou lancer un test/lint équivalent),
+  - se lancer sur un événement simple (ex. `push` sur la branche principale).
+
+L’objectif n’est pas d’avoir une pipeline complète, mais de **formaliser** un premier automatisme de validation.
+
+------------------------------------------------------------
+5) Documentation technique
+------------------------------------------------------------
+Vous devez produire une **documentation technique** structurée (en Markdown dans `docs/` ou en PDF).
+
+Cette documentation doit comprendre au minimum :
+
+1. Résumé du contexte DataPress
+   - synthèse des documents de contexte (problème initial, objectifs du POC).
+
+2. Architecture proposée
+   - un schéma ou une description claire de :
+     - l’architecture en mode développement (Docker/Compose),
+     - l’architecture en mode recette (Kubernetes).
+   - un texte expliquant :
+     - pourquoi Docker et Kubernetes sont adaptés,
+     - comment votre solution répond aux enjeux de DataPress (séparation des services, fiabilité, test de nouvelles versions, etc.).
+
+3. Décisions techniques importantes
+   - organisation des images (multi-stage, non-root),
+   - stratégie d’exposition (NodePort vs Ingress),
+   - probes (readiness, liveness, éventuellement startup),
+   - ressources (requests/limits),
+   - utilisation des ConfigMaps & Secrets.
+
+4. Guide d’exploitation
+   - comment lancer l’environnement de développement (Docker Compose),
+   - comment déployer sur Kubernetes,
+   - quelles commandes utiliser pour vérifier que le système fonctionne.
+
+5. Limites et pistes d’amélioration
+   - ce qui n’est pas couvert dans le POC,
+   - ce que vous proposeriez pour une future version (Ingress plus complet, TLS, autoscaling, monitoring avancé, NetworkPolicies, etc.).
+
+------------------------------------------------------------
+6) Présentation type “client” (PowerPoint)
+------------------------------------------------------------
+Vous devez préparer une **présentation** (diaporama) comme si vous deviez la présenter au DSI et à son équipe.
+
+Quelques points d’appui (vous pouvez adapter) :
+
+- Contexte et problématique DataPress (version courte et compréhensible).
+- Objectifs du POC.
+- Architecture globale proposée (schéma).
+- Mode dev (Docker/Compose) et mode recette (Kubernetes).
+- Sécurité et fiabilité (probes, non-root, ConfigMaps/Secrets, ressources).
+- CI/CD : ce qui est en place et ce à quoi cela sert.
+- Limites du POC et recommandations pour aller plus loin.
+
+La présentation doit être **claire et synthétique**, en évitant le jargon inutile.
+
+------------------------------------------------------------
+7) Rendu
+------------------------------------------------------------
+Votre rendu final doit inclure :
+
+- Le **dépôt Git** complet et organisé.
+- Les fichiers de configuration Docker et Kubernetes.
+- La **documentation technique** (en Markdown ou PDF).
+- La **présentation** (format PowerPoint ou équivalent).
+- Éventuellement quelques **captures d’écran** (exécution locale, kubectl, k9s, interface front).
+
+Tout élément doit être suffisant pour qu’une équipe technique de DataPress puisse :
+
+- comprendre votre proposition,
+- la rejouer,
+- et décider si le POC est une base acceptable pour aller plus loin.

@@ -1,0 +1,25 @@
+Titre : Contexte général – Entreprise DataPress
+
+DataPress est une PME spécialisée dans l’édition de tableaux de bord et de rapports pour les équipes marketing de ses clients. L’entreprise propose une plateforme interne qui permet :
+
+- d’afficher des indicateurs simples (trafic, campagnes, taux de conversion),
+- de centraliser quelques rapports PDF et CSV,
+- de donner une vue “synthèse” aux responsables marketing.
+
+Aujourd’hui, la plateforme est hébergée sur un **seul serveur** dans le datacenter de DataPress. Sur cette même machine tournent :
+
+- le **front web** (interface graphique),
+- l’**API** (qui sert les données et quelques traitements),
+- la **base de données**,
+- des scripts “maison” lancés régulièrement par des cron.
+
+Cette organisation a été mise en place progressivement, sans réelle standardisation. Le serveur arrive en fin de vie matérielle, et plusieurs incidents récents ont mis en évidence des limites importantes :
+
+- quand le serveur tombe, **toute la plateforme est indisponible** ;
+- la **mise à jour** du front ou de l’API entraîne souvent une coupure de service ;
+- il est **difficile de tester** une nouvelle version sans impacter les utilisateurs ;
+- la **documentation** est partielle, dispersée dans des mails et des fichiers.
+
+Le DSI de DataPress souhaite profiter du renouvellement de l’infrastructure pour moderniser les pratiques de déploiement. Il a entendu parler de **Docker**, de **Kubernetes** et d’**approches CI/CD**, mais son équipe n’a pas encore les compétences pour concevoir une architecture cible.
+
+Pour éviter de “se tromper de direction” dès le départ, il a décidé de lancer un **proof of concept (POC)** limité à un environnement de **recette**, sans impacter les clients. C’est ce POC que vous allez concevoir et mettre en place, dans le cadre de ce TP.

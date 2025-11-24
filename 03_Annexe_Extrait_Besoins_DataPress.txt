@@ -1,0 +1,54 @@
+Titre : Annexe – Extrait de besoins pour le POC DataPress
+
+Les points ci-dessous résument les attentes fonctionnelles et techniques minimales pour le POC.
+
+1) Fonctionnel minimal
+-----------------------
+- Le front doit afficher au moins :
+  - un titre “DataPress – POC”,
+  - une indication de **version** (ex. “v1.0 POC”),
+  - un lien ou une indication permettant de vérifier que l’API répond.
+- L’API doit proposer au minimum :
+  - un endpoint racine `/` qui renvoie un JSON simple (ex. { "service": "api", "ts": … }),
+  - un endpoint `/health` utilisable pour vérifier son état.
+
+2) Mode “développement”
+------------------------
+- Nous souhaitons un mode exécutable facilement par un développeur (sur sa machine) à l’aide d’un outil de type **Docker Compose**.
+- En local, un développeur doit pouvoir :
+  - lancer front + API (et éventuellement une base de données),
+  - tester l’application sans installer manuellement des dépendances système.
+
+3) Environnement “recette” sur Kubernetes
+-----------------------------------------
+- Le POC doit être déployé sur un cluster Kubernetes de recette.
+- Nous attendons au minimum :
+  - un **namespace dédié**,
+  - un **Deployment** pour l’API (avec plusieurs réplicas),
+  - un **Deployment** pour le front,
+  - un **Service** de type **ClusterIP** pour l’API,
+  - un **mécanisme d’exposition** pour le front (Service NodePort ou Ingress),
+  - au moins un **ConfigMap** (paramétrage non sensible),
+  - au moins un **Secret** (paramétrage sensible).
+
+4) Observabilité & exploitation
+-------------------------------
+- Nous voulons pouvoir vérifier que :
+  - l’API est **vivante** et **prête**, via des endpoints exploitables par Kubernetes,
+  - les pods sont correctement répartis et redémarrés si nécessaire.
+- Il est important de fournir un **guide d’exploitation** simple :
+  - comment lancer le POC,
+  - comment vérifier son bon fonctionnement,
+  - comment interpréter quelques commandes de base (ex. `kubectl get`, `kubectl describe`, `kubectl logs`).
+
+5) CI/CD minimal
+----------------
+- Nous ne demandons pas une pipeline complète, mais au moins :
+  - un **workflow de build** sur le dépôt Git,
+  - qui vérifie qu’une nouvelle version de l’API peut être construite sans erreur.
+
+6) Livrables attendus pour le POC
+---------------------------------
+- Une **documentation technique** claire.
+- Une **présentation** adaptée à une réunion de validation (type PowerPoint).
+- Un **dépôt Git** organisé qui pourrait servir de base de travail à nos équipes.
